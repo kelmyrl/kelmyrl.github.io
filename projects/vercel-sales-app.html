@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Data Dashboard &middot; Kelmy Lemus</title>
+  <meta name="description" content="A Next.js + Supabase sales data app deployed on Vercel, with an explanation of the GitHub-to-Vercel deployment pipeline." />
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+  <header class="site">
+    <nav class="site">
+      <a class="brand" href="../index.html">Kelmy Lemus</a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../projects.html" class="active">Projects</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="detail-header" style="border-top: none;">
+      <div class="wrap">
+        <a class="back-link" href="../projects.html">&larr; Back to projects</a>
+        <h1>Sales Data Dashboard</h1>
+        <p class="lede">
+          A Next.js application that reads sales records from a Supabase
+          database and displays them on a webpage, deployed on Vercel with
+          automatic builds triggered from GitHub.
+        </p>
+        <div class="meta-row">
+          <span class="skill-tag">Next.js</span>
+          <span class="skill-tag">Supabase</span>
+          <span class="skill-tag">Vercel</span>
+          <span class="skill-tag">React</span>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://semapi-three.vercel.app/" target="_blank" rel="noopener">View Live App &#8599;</a>
+          <a class="btn btn-ghost" href="https://github.com/kelmyrl" target="_blank" rel="noopener">GitHub Profile</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-body">
+      <div class="wrap">
+        <h2>Overview</h2>
+        <p>
+          This project is an early-stage prototype for tracking and
+          presenting sales metrics. The current version connects to a
+          Supabase database and pulls a table of sales records &mdash;
+          timestamps, quantities, and values &mdash; rendering them directly
+          on the page. It's intentionally simple right now: the focus so far
+          has been getting the data pipeline and deployment working end to
+          end, with the UI to be built out from there.
+        </p>
+
+        <h2>How it works</h2>
+        <p>
+          The app is built with Next.js. On page load, it queries a
+          Supabase project (a hosted Postgres database with an
+          auto-generated API) using the Supabase JavaScript client, and
+          renders the returned rows as a list on the page. Supabase handles
+          the database and API layer; Next.js handles fetching that data and
+          turning it into HTML.
+        </p>
+
+        <h2>Next.js, GitHub &amp; Vercel: how deployment works</h2>
+        <p>
+          A big part of this project was setting up the pipeline that takes
+          code from a local editor to a live URL automatically. Here's how
+          the three pieces fit together:
+        </p>
+
+        <div class="diagram">
+          <div class="diagram-row">
+            <div class="diagram-box">
+              <div class="label">Local Next.js App</div>
+              <div class="sub">code + git commit</div>
+            </div>
+            <div class="diagram-arrow">&rarr;</div>
+            <div class="diagram-box">
+              <div class="label">GitHub Repo</div>
+              <div class="sub">git push</div>
+            </div>
+            <div class="diagram-arrow">&rarr;</div>
+            <div class="diagram-box">
+              <div class="label">Vercel</div>
+              <div class="sub">build &amp; deploy</div>
+            </div>
+            <div class="diagram-arrow">&rarr;</div>
+            <div class="diagram-box">
+              <div class="label">Live URL</div>
+              <div class="sub">semapi-three.vercel.app</div>
+            </div>
+          </div>
+          <p class="diagram-caption">
+            Vercel also calls out to Supabase at request time to fetch sales data.
+          </p>
+        </div>
+
+        <h3>The pipeline, step by step</h3>
+        <ol class="steps">
+          <li>
+            <strong>Write code locally.</strong> The app is a standard
+            Next.js project &mdash; pages/components, plus the Supabase
+            client configured with a project URL and API key.
+          </li>
+          <li>
+            <strong>Push to GitHub.</strong> The project lives in a GitHub
+            repository. Every commit pushed to a branch updates the remote
+            history that Vercel watches.
+          </li>
+          <li>
+            <strong>Vercel is connected to the repo.</strong> Through
+            Vercel's GitHub integration, the project is linked once; from
+            then on, Vercel listens for new commits instead of requiring a
+            manual deploy step.
+          </li>
+          <li>
+            <strong>Every push triggers a build.</strong> On a push to a
+            feature branch or pull request, Vercel automatically builds the
+            app (<code>next build</code>) and publishes a unique
+            <em>preview deployment</em> URL, so changes can be checked before
+            they go live.
+          </li>
+          <li>
+            <strong>Merging to main deploys to production.</strong> When
+            changes are merged into the main branch, Vercel builds again and
+            promotes that build to the production URL
+            (semapi-three.vercel.app) &mdash; no manual server setup or
+            hosting configuration required.
+          </li>
+          <li>
+            <strong>Supabase credentials stay out of the repo.</strong> The
+            Supabase project URL and API key are stored as environment
+            variables in Vercel's project settings, not committed to
+            GitHub, and are injected into the app at build/runtime.
+          </li>
+        </ol>
+
+        <h3>Why this setup</h3>
+        <p>
+          This is the standard workflow Vercel is built around: it's made by
+          the creators of Next.js, so the two are tightly integrated
+          (zero-config builds, serverless functions, edge rendering, etc.),
+          and connecting a GitHub repo gets continuous deployment &mdash;
+          every push is automatically built and shipped &mdash; without
+          needing to manage a server. Supabase fills the backend role,
+          giving the app a real database and API without writing custom
+          backend code.
+        </p>
+
+        <h3>Status &amp; next steps</h3>
+        <p>
+          Right now the app only reads and displays data. Planned next steps
+          include building out the UI (tables/charts instead of a raw list),
+          adding the ability to write new sales entries, and adding basic
+          auth via Supabase.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site" id="contact">
+    <div class="wrap">
+      <span>&copy; 2026 Kelmy Lemus</span>
+      <div class="links">
+        <a href="https://github.com/kelmyrl" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:betykelmi@gmail.com">Email</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
